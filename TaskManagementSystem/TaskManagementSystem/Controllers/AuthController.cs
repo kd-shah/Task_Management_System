@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
+using TaskManagementSystem.Models;
 
 namespace TaskManagementSystem.Controllers
 {
@@ -8,6 +10,13 @@ namespace TaskManagementSystem.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly TaskContext _context;
+
+        public AuthController(TaskContext context)
+        {
+            _context = context;
+        }
+
         public static User user = new User();
 
         [HttpPost("register)")]
@@ -33,7 +42,23 @@ namespace TaskManagementSystem.Controllers
 
         }
 
-            
-       
+        [HttpPost]
+        public async Task<ActionResult<UserDto>> PostUserDto(UserDto userDto)
+        {
+            if (_context.Users_Table == null)
+            {
+                return Problem("Entity set 'TaskContext.TaskItems'  is null.");
+            }
+            _context.Users_Table.Add(userDto);
+            await _context.SaveChangesAsync();
+
+            //return CreatedAtAction("GetTaskItem", new { id = taskItem.Id }, taskItem);
+            return CreatedAtAction(nameof(GetUserDto), new { id = userDto.Username }, userDto);
+        }
+
+        private object GetUserDto()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -10,5 +10,6 @@ namespace TaskManagementSystem.Models
         }
 
         public DbSet<TaskItem> TaskItems { get; set; } = null!;
+        public DbSet<UserDto> Users_Table { get; set; } 
     }
 }
